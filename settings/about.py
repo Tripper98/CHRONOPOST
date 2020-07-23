@@ -1,0 +1,1 @@
+txt = "This is Drakmys app >> Chronopost"
