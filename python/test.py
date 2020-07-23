@@ -1,5 +1,8 @@
-import os    
 
-l=os.listdir('./python/data/')
-li=[x.split('.')[0] for x in l]
-print(li)
+
+
+def donnate(x) : 
+    y= [i+1 for i in x ]
+    return x,y 
+
+print(donnate([0,1])[0])

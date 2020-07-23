@@ -55,7 +55,7 @@ class Chart():
          x=count_cluster,
          y=y_clusters,
             marker=dict(
-                color='#f89640',
+                color='#9CC0E7',
                 line=dict(
                     color='#FFFFFF',
                     width=1)
@@ -67,44 +67,59 @@ class Chart():
         fig.update_layout(plot_bgcolor='white', autosize=False, width=1000, height=400) 
         return fig
 
-    @staticmethod
-    def plot_2h_bar(df) :
+    # @staticmethod
+    # def plot_2h_bar(df) :
         
-        top_cust_shp = df.nlargest(5, 'NUM_OF_SHP')['NUM_OF_SHP'].tolist()
-        top_cust_name = df.nlargest(5, 'NUM_OF_SHP')['CUST_NAME'].tolist()
+    #     fig2 = make_subplots(rows=1, cols=2, specs=[[{}, {}]], shared_xaxes=True,
+    #                 shared_yaxes=False, vertical_spacing=0.001)
 
-        top_cust_kg = df.nlargest(5, 'CUST_TOTAL_KG')['CUST_TOTAL_KG'].tolist()
-        top_cust_kg_name = df.nlargest(5, 'CUST_TOTAL_KG')['CUST_NAME'].tolist()
+    #     fig2.append_trace(go.Bar(
+    #         x=top_cust_shp,
+    #         y=top_cust_name,
+    #         marker=dict(
+    #             color='rgba(50, 171, 96, 0.6)',
+    #             line=dict(
+    #                 color='rgba(50, 171, 96, 1.0)',
+    #                 width=1),
+    #         ),
+    #         orientation='h',
+    #     ), 1, 1)
 
-        fig2 = make_subplots(rows=1, cols=2, specs=[[{}, {}]], shared_xaxes=True,
-                    shared_yaxes=False, vertical_spacing=0.001)
+    #     fig2.append_trace(go.Bar(
+    #         x=top_cust_kg,
+    #         y=top_cust_kg_name,
+    #         marker=dict(
+    #             color='rgba(50, 171, 96, 0.6)',
+    #             line=dict(
+    #                 color='rgba(50, 171, 96, 1.0)',
+    #                 width=1),
+    #         ),
+    #         orientation='h',
+    #     ), 1, 2)
 
-        fig2.append_trace(go.Bar(
-            x=top_cust_shp,
-            y=top_cust_name,
+    #     #fig.update_traces(marker=dict(colors=colors))
+    #     fig2.update_layout(plot_bgcolor='white', autosize=False, width=1000, height=400) 
+    #     return fig2
+    
+    @staticmethod
+    def plot_h_top(details,info) : 
+
+        if info : 
+            color = '#22bb33'
+        else : 
+            color = '#bb2124'
+        fig = go.Figure(go.Bar(
+         x=details[0],
+         y=details[1],
             marker=dict(
-                color='rgba(50, 171, 96, 0.6)',
+                color=color,
                 line=dict(
-                    color='rgba(50, 171, 96, 1.0)',
-                    width=1),
+                    color='#FFFFFF',
+                    width=1)
             ),
             orientation='h',
-        ), 1, 1)
-
-        fig2.append_trace(go.Bar(
-            x=top_cust_kg,
-            y=top_cust_kg_name,
-            marker=dict(
-                color='rgba(50, 171, 96, 0.6)',
-                line=dict(
-                    color='rgba(50, 171, 96, 1.0)',
-                    width=1),
-            ),
-            orientation='h',
-        ), 1, 2)
+        ))
 
         #fig.update_traces(marker=dict(colors=colors))
-        fig2.update_layout(plot_bgcolor='white', autosize=False, width=1000, height=400) 
-        return fig2
-    
-        
+        fig.update_layout(plot_bgcolor='white', autosize=False, width=1000, height=400) 
+        return fig

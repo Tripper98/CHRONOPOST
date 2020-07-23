@@ -47,6 +47,11 @@ inputs = dbc.FormGroup([
     dcc.Dropdown(id="dataframe", options=[{"label":x,"value":x} for x in data.li], value="ship")
 ])
 
+customer_input = dbc.FormGroup([
+    html.H4("To DO "),
+    dcc.Dropdown(id="cust_id", options=[{"label":x,"value":x} for x in data.li], value="")
+])
+
 # App Layout
 app.layout = dbc.Container(fluid=True, children=[
     ## Top
@@ -100,13 +105,52 @@ app.layout = dbc.Container(fluid=True, children=[
                 dbc.Col(md=9, children=[
                 html.Div(id="cluster-title"),
                 dbc.Tabs(className="nav nav-pills", children=[
-                dbc.Tab(dcc.Graph(id="top-plot"), label="Top customers"),
+                dbc.Tab(dcc.Graph(id="top-plot"), label="Top customers / Total kgs"),
+                dbc.Tab(dcc.Graph(id="top-plot-kgs"), label="Top customers / Total shipment"),
                 dbc.Tab(dcc.Graph(id="..."), label="...")
                 
             ])
                         ])
             ]
-        )
+        ),
+
+        dbc.Row(
+            [   
+                
+                dbc.Col(md=3, children=[
+                   # html.Div(id="cluster-panel")
+            ]),
+
+                dbc.Col(md=9, children=[
+                #html.Div(id="cluster-title"),
+                dbc.Tabs(className="nav nav-pills", children=[
+                dbc.Tab(dcc.Graph(id="buttom-plot-kgs"), label="Wassla l3dm / Total kgs"),
+                dbc.Tab(dcc.Graph(id="buttom-plot"), label="Wassla l3dm / Total shipment"),
+                dbc.Tab(dcc.Graph(id=".."), label="....")
+                
+            ])
+                        ])
+            ]
+        ),
+        dbc.Row([
+        ### input + panel
+        dbc.Col(md=3, children=[
+           customer_input
+        ]),
+        ### plots
+        ### plots
+        dbc.Col(md=9, children=[
+            dbc.Col(html.H4("ML Analysis"), width={"size":6,"offset":3})
+            # dbc.Tabs(className="nav nav-pills", children=[
+            #     dbc.Tab(dcc.Graph(id="k-means"), label="K-means Clustering"),
+            #     dbc.Tab(dcc.Graph(id="plot-active"), label="Hierarchical Clustering")
+                
+            # ])
+        ])
+        
+                
+    ])
+
 ])
 
 
@@ -121,15 +165,43 @@ app.layout = dbc.Container(fluid=True, children=[
 #     return chart.plot_hist(d,feature)
 
 
-
 #Top plot 
 @app.callback(output=Output("top-plot","figure"), inputs=[Input("cluster-panel","value")])
-def render_cluster_plot(cluster_panel):
+def render_cluster_plot_bsh(cluster_panel):
     # print(cluster_panel," ",type(cluster_panel))
     d= data.get_shp_cluster_name(cluster_panel)
+    details = data.get_top_shps(d)
     # clu_int = int(cluster_panel)
     chart = Chart()
-    return chart.plot_2h_bar(d)
+    return chart.plot_h_top(details,True)
+
+@app.callback(output=Output("top-plot-kgs","figure"), inputs=[Input("cluster-panel","value")])
+def render_cluster_plot_tkg(cluster_panel):
+    # print(cluster_panel," ",type(cluster_panel))
+    d= data.get_shp_cluster_name(cluster_panel)
+    details = data.get_top_kgs(d)
+    # clu_int = int(cluster_panel)
+    chart = Chart()
+    return chart.plot_h_top(details,True)
+
+#bottom plot 
+@app.callback(output=Output("buttom-plot","figure"), inputs=[Input("cluster-panel","value")])
+def render_cluster_plot_bsh(cluster_panel):
+    # print(cluster_panel," ",type(cluster_panel))
+    d= data.get_shp_cluster_name(cluster_panel)
+    details = data.get_buttom_shps(d)
+    # clu_int = int(cluster_panel)
+    chart = Chart()
+    return chart.plot_h_top(details,False)
+
+@app.callback(output=Output("buttom-plot-kgs","figure"), inputs=[Input("cluster-panel","value")])
+def render_cluster_plot_bkg(cluster_panel):
+    # print(cluster_panel," ",type(cluster_panel))
+    d= data.get_shp_cluster_name(cluster_panel)
+    details = data.get_bottom_kgs(d)
+    # clu_int = int(cluster_panel)
+    chart = Chart()
+    return chart.plot_h_top(details,False)
 
 
 # Plot scatter
