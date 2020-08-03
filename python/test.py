@@ -1,8 +1,4 @@
 
+path = "python/data/"+dataframe+"_with_names.csv"
 
-
-def donnate(x) : 
-    y= [i+1 for i in x ]
-    return x,y 
-
-print(donnate([0,1])[0])
+print(path)
