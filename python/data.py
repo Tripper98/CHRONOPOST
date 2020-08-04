@@ -155,8 +155,10 @@ class Data():
         top_cust_kg_name = shipments.nsmallest(5, 'CUST_TOTAL_VOLUME')['CUST_NAME'].tolist()
 
         return top_cust_kg,top_cust_kg_name
-
     
+    @staticmethod
+    def get_info(df): 
+        return df['NUM_OF_SHP'].mean(),df['CUST_TOTAL_PRICE'].mean()
     
 
 

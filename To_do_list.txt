@@ -1,3 +1,1 @@
-1. analys clusters 
-2. Add analysis panel
-3. 
+Add feature analysis 

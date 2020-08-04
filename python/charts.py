@@ -48,11 +48,14 @@ class Chart():
     @staticmethod
     def plot_h_bar(df) : 
         
-        count_cluster = df['cluster'].value_counts().tolist()
-        y_clusters = ['cluster1','cluster0','cluster4','cluster3','cluster2']
+        count_cluster = df['cluster'].value_counts()
+        y_clusters = [x for x in count_cluster.index ]
+        #print(x_clusters)
+        x_clusters = [x for x in count_cluster ]
+        #print(y_clusters)
 
         fig = go.Figure(go.Bar(
-         x=count_cluster,
+         x=x_clusters,
          y=y_clusters,
             marker=dict(
                 color='#9CC0E7',

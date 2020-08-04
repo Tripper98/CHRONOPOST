@@ -101,7 +101,8 @@ app.layout = dbc.Container(fluid=True, children=[
             [   
                 
                 dbc.Col(md=3, children=[
-                    html.Div(id="cluster-panel")
+                    html.Div(id="cluster-panel"),
+                    html.Div(id="cluster-insight")
             ]),
 
                 dbc.Col(md=9, children=[
@@ -161,6 +162,35 @@ app.layout = dbc.Container(fluid=True, children=[
 
 
 
+
+#Python function to plot panel 
+@app.callback(output=Output("cluster-insight","children"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
+def render_cluster_title(cluster_panel,dataframe):
+    d= data.get_shp_cluster_name(cluster_panel,dataframe)
+    info = data.get_info(d)
+    panel = html.Div([
+        html.H4('Characteristics of Cluster {}'.format(cluster_panel)),
+        dbc.Card(body=True, className="text-white bg-primary", children=[
+            
+            html.H6("mean || Total Price:", style={"color":"white"}),
+            html.H3("{:,.0f}".format(info[1]), style={"color":"white"}),
+            
+            html.H6("mean || Total Shipments:", className="text-danger"),
+            html.H3("{:,.0f}".format(info[0]), className="text-danger"),
+            
+            # html.H6("Best Customer:", style={"color":"white"}),
+            # html.H3("{:,.0f}".format(active_cases_today), style={"color":"white"}),
+            
+            # html.H6("Worst Customer:", className="text-danger"),
+            # html.H3("{:,.0f}".format(active_cases_in_30days), className="text-danger"),
+            
+            # html.H6("Peak day:", style={"color":peak_color}),
+            # html.H3(peak_day.strftime("%Y-%m-%d"), style={"color":peak_color}),
+            # html.H6("with {:,.0f} cases".format(num_max), style={"color":peak_color})
+        
+        ])
+    ])
+    return panel
 
 
 # Python function to plot Histogram
