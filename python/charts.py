@@ -70,6 +70,17 @@ class Chart():
         fig.update_layout(plot_bgcolor='white', autosize=False, width=1000, height=400) 
         return fig
 
+    @staticmethod
+    def plot_map(df,feature) : 
+        
+        fig = px.choropleth(df, locations="code_alpha_3",
+                    color= feature, # lifeExp is a column of gapminder
+                    hover_name="ENGLISH_NAME", # column to add to hover information
+                    color_continuous_scale=px.colors.sequential.Brwnyl,
+                    )
+
+        return fig
+
     # @staticmethod
     # def plot_2h_bar(df) :
         

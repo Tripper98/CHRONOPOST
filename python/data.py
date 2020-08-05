@@ -28,6 +28,7 @@ class Data():
         self.l=os.listdir('./python/data/')
         self.li =[x.split('.')[0] for x in self.l]
 
+    
     def get_opr_shp():
         shipments = pd.read_csv("python/opr_ship.csv")
         shipments.drop('Unnamed: 0',axis=1, inplace= True)
@@ -160,7 +161,17 @@ class Data():
     def get_info(df): 
         return df['NUM_OF_SHP'].mean(),df['CUST_TOTAL_PRICE'].mean()
     
+    @staticmethod
+    def get_columns_map() :
+        return ['TOTAL KG','TOTAL VOLUME','TOTAL PRICE','TOTAL SHIPMENTS']
+    
+    @staticmethod
+    def get_map_data() : 
+        return pd.read_csv("python/df_map.csv")
 
+    @staticmethod
+    def get_map_data_sender() : 
+        return pd.read_csv("python/df_map_sender.csv")
 
     
     

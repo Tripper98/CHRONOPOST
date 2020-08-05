@@ -48,6 +48,11 @@ inputs = dbc.FormGroup([
     dcc.Dropdown(id="dataframe", options=[{"label":x,"value":x} for x in data.li], value="shipments")
 ])
 
+map_input = dbc.FormGroup([
+    html.H4("Select a Feature"),
+    dcc.Dropdown(id="map_feature", options=[{"label":x,"value":x} for x in data.get_columns_map()], value="TOTAL PRICE")
+])
+
 customer_input = dbc.FormGroup([
     html.H4("To DO "),
     dcc.Dropdown(id="cust_id", options=[{"label":x,"value":x} for x in data.li], value="")
@@ -63,6 +68,25 @@ app.layout = dbc.Container(fluid=True, children=[
 
     ## Body
     dbc.Row([
+        ### input + panel
+        dbc.Col(md=3, children=[
+            map_input
+        ]),
+        ### plots
+        ### plots
+        dbc.Col(md=9, children=[
+            dbc.Col(html.H4("Map Analysing"), width={"size":6,"offset":3}), 
+            dbc.Tabs(className="nav nav-pills", children=[
+                dbc.Tab(dcc.Graph(id="map-plot"), label="Receiver Country"),
+                dbc.Tab(dcc.Graph(id="map-plot-sender"), label="Sender Country")
+               
+                
+            ])
+        ])
+        
+                
+    ])
+    ,dbc.Row([
         ### input + panel
         dbc.Col(md=3, children=[
             inputs
@@ -102,6 +126,7 @@ app.layout = dbc.Container(fluid=True, children=[
                 
                 dbc.Col(md=3, children=[
                     html.Div(id="cluster-panel"),
+                    html.Br(),html.Br(),
                     html.Div(id="cluster-insight")
             ]),
 
@@ -199,6 +224,19 @@ def render_cluster_title(cluster_panel,dataframe):
 #     d=data.df
 #     chart = Chart()
 #     return chart.plot_hist(d,feature)
+
+# map plot 
+@app.callback(output=Output("map-plot","figure"), inputs=[Input("map_feature","value")]) 
+def plot_map(map_feature):
+    df = data.get_map_data()   
+    chart = Chart()
+    return chart.plot_map(df,map_feature)
+
+@app.callback(output=Output("map-plot-sender","figure"), inputs=[Input("map_feature","value")]) 
+def plot_map(map_feature):
+    df = data.get_map_data_sender()   
+    chart = Chart()
+    return chart.plot_map(df,map_feature)
 
 
 #Top plot 
