@@ -31,18 +31,11 @@ class Chart():
         return fig 
 
     @staticmethod
-    def plot_pie(df) : 
-        
-        colors = ['#1b078d','#7d07a6','#cb4779','#f89640','#f0f921']
-        fig = px.pie(df, values='cluster', names='cluster', color="cluster",
-             color_discrete_map={'0':'#1b078d',
-                                 '1':'#7d07a6',
-                                 '2':'#cb4779',
-                                 '3':'#f89640',
-                                 '4' :'#f0f921'   }
-            )
-        #fig.update_traces(marker=dict(colors=colors))
-        fig.update_layout(plot_bgcolor='white', autosize=False, width=500, height=500) 
+    def plot_pie(df_cust,customer) : 
+         
+        df_cust.loc[df_cust['TOTAL_PRICE_LOCAL'] < 200, 'PROD_NAME'] = 'Other Products'
+        fig = px.pie(df_cust, values='TOTAL_PRICE_LOCAL', names='PROD_NAME', title='Total Price Per Product')
+
         return fig 
 
     @staticmethod

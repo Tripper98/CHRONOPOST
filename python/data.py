@@ -100,6 +100,15 @@ class Data():
         shipmentsf = kk.get_group(int(cluster))
     
         return shipmentsf
+    
+    @staticmethod
+    def get_shp_customer_info(customer,name_file): 
+        
+        path = "python/data/"+name_file+".csv"
+        shp_names = pd.read_csv(path)
+        df_aux = shp_names.loc[shp_names['CUST_NAME'] == customer,'CUST_TOTAL_KG':'NUM_OF_SHP'][['NUM_OF_SHP','CUST_TOTAL_PRICE']]
+        return df_aux['CUST_TOTAL_PRICE'][0],df_aux['NUM_OF_SHP'][0]
+    
 
     @staticmethod
     def get_top_shps(shipments) : 
@@ -172,6 +181,10 @@ class Data():
     @staticmethod
     def get_map_data_sender() : 
         return pd.read_csv("python/df_map_sender.csv")
+
+    @staticmethod
+    def get_product_customer() : 
+        return pd.read_csv("python/data/prod_cust.csv")
 
     
     
