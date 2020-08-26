@@ -1,0 +1,64 @@
+Dédicace ========================================================================
+
+Je dédie ce travail,
+A mes chers parents
+Je ne trouve pas les mots pour rendre hommage à votre
+vertu, j’espère que vous trouverez dans ce travail l’expression de ma
+reconnaissance pour vous
+A ma soeur Hiba
+A mes frères Radouane, Hamza et Adam
+A mes co-chambres BOUZ, BENHMEMMID, FANGACHI et SELMANI
+pour leur soutien et leurs conseils prodigieux.
+A toute la promo ISI&BD 2018/2021
+pour les beaux moments que nous avons vécu ensemble.
+
+Remerciement ====================================================================
+
+Il m’ est agréable de m’ acquitter d’une dette de reconnaissance auprès de
+toutes les personnes, dont l’intervention au cours de ce projet a favorisé son
+aboutissement.
+
+Je tiens à remercier mon encadrant à l’ENSIAS, M. xxxx  pour tout le temps qu’il
+nous a consacré, pour ses conseils pertinents, ses directives précieuses, pour la
+qualité de son suivi et pour ses réflexions éclairées qui nous ont été salutaires
+durant toute la période du projet.
+
+ma reconnaissance s’adresse également à M. xxxx et M. xxxx, 
+Mlle xxxx et M.xxxx, pour leur
+accueil, leur confiance et leur esprit d’équipe et de partage qui ont rendu ce projet
+intéressant. Je les remercie également pour leur patience, leur amabilité, les
+conseils et les formations qu’ils nous ont prodigués durant ce projet.
+
+Que les membres du jury trouvent ici l’expression de ma reconnaissance pour
+avoir accepté d’évaluer notre travail.
+
+Que tous ceux qui ont contribué de près ou de loin dans notre formation et/ou
+dans l’accomplissement de ce travail en particulier le corps professoral de ma
+chère école ENSAB, trouvent ici l’expression de mes remerciements les plus
+chaleureux.
+
+Résumé ==========================================================================
+
+Le présent document constitue le fruit de mon travail accompli au sein de 
+CHRONOPOST afin d'analyser et ségmenter ses clients en se basant sur 
+"unsupervised learning algorithm" et précisement K-means Clustering .  
+
+Mon projet consiste à créer une application web qui regroupe la totalité d'analyse
+aprés la ségmentation des clients en "clusters".L'application est réalisé 100% en 
+language python. 
+
+Abstract ========================================================================
+
+
+Chapitre 1 : Contexte général du projet =======================================================================
+I.	Présentation des organismes d’accueil : 
+II.	Cadre général du projet :
+
+Chapitre 2: Analyse, spécification des besoins et Conception  =======================================================================
+I.	Analyse de l’existant :
+II.     Axes d'analyse et indicateurs:
+
+III.	Spécifications techniques: 
+====> Environnement de développement
+====> Architecture de la solution
+Chapitre 4: Mise en œuvre ========================================================

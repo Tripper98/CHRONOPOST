@@ -10,6 +10,7 @@ import dash_html_components as html
 import dash_bootstrap_components as dbc
 
 from settings import config, about
+from python.process import Process
 from python.data import Data
 from python.charts import Chart
 # from python.model import Model
@@ -54,6 +55,11 @@ map_input = dbc.FormGroup([
     dcc.Dropdown(id="map_feature", options=[{"label":x,"value":x} for x in data.get_columns_map()], value="TOTAL PRICE")
 ])
 
+# products input 
+products_input = dbc.FormGroup([
+    dcc.Dropdown(id="product_name", options=[{"label":x,"value":x} for x in data.get_product_customer().PROD_NAME.unique().tolist()],placeholder="Select a Product") 
+])
+
 plots_top_top = html.Div([
     dbc.FormGroup([
     dcc.Dropdown(id="top_top", options=[{"label":x,"value":x} for x in data.get_columns_map()],placeholder="Top Customers By")
@@ -63,6 +69,12 @@ plots_top_top = html.Div([
 plots_worst_worst = html.Div([
     dbc.FormGroup([
     dcc.Dropdown(id="worst_worst", options=[{"label":x,"value":x} for x in data.get_columns_map()],placeholder="Worst Customers By")
+    ])
+    ])
+
+time_series_products = html.Div([
+    dbc.FormGroup([
+    dcc.Dropdown(id="analyze_by", options=[{"label":x,"value":x} for x in data.get_columns_map()],placeholder="Analyze By")
     ])
     ])
 
@@ -128,20 +140,22 @@ app.layout = dbc.Container(fluid=True, children=[
             ])
                         ])
             ]
-        )
+        ),
 
-    ,dbc.Row([
+    dbc.Row([
         ### input + panel
         dbc.Col(md=3, children=[
-            inputs
+            inputs,
+            html.Div(id="name_group"),
+            html.Div(id="city_type")
         ]),
         ### plots
         ### plots
         dbc.Col(md=9, children=[
             dbc.Col(html.H4("ML Analysis"), width={"size":6,"offset":3}), 
             dbc.Tabs(className="nav nav-pills", children=[
-                dbc.Tab(dcc.Graph(id="k-means"), label="K-means Clustering"),
-                dbc.Tab(dcc.Graph(id="plot-active"), label="Hierarchical Clustering")
+                dbc.Tab(dcc.Graph(id="k-means"), label="K-means Clustering")
+                # dbc.Tab(dcc.Graph(id="horizontal-bar"), label="K-means insight")
                 
             ])
         ])
@@ -169,74 +183,113 @@ app.layout = dbc.Container(fluid=True, children=[
             [   
                 
                 dbc.Col(md=3, children=[
-                    html.Div(id="cluster-panel"),
+                    html.Div(id="cluster-panel-output"),
                     html.Br(),
                     html.Div(id="cluster-insight"),
-                    html.Br(),
-                    html.Div(id="customers-insight")
+                    html.Br()
+                    #html.Div(id="customers-insight")
                     
             ]),
 
                 dbc.Col(md=9, children=[
+
                 html.Div(id="cluster-title"),
-                # dbc.Tabs(className="nav nav-pills", children=[
-                # dbc.Tab(dcc.Graph(id="top-plot"), label="Top customers / Total kgs"),
-                # dbc.Tab(dcc.Graph(id="top-plot-kgs"), label="Top customers / Total shipment"),
-                # dbc.Tab(dcc.Graph(id="top-plot-volume"), label="Top customers / Total volume"),
-                # dbc.Tab(dcc.Graph(id="top-plot-price"), label="Top customers / Total price"),
-                # dbc.Tab(dcc.Graph(id="..."), label="...")
-                
                 html.Div(id="customer-dropdown"),
                 dcc.Graph(id="pie-chart"),
+
+
+                   
+            ])
+                    ]),
+
+       
+        dbc.Row([
+        ### input + panel
+        dbc.Col(md=3, children=[
+           products_input
+        ]),
+        ### plots
+        dbc.Col(md=9, children=[
+                
+                time_series_products,
+                dcc.Graph(id="time_products"),
+
                 plots_top_top,
                 dcc.Graph(id="top-plots"),
 
                 plots_worst_worst,
                 dcc.Graph(id="worst-plots")
-                   
-            ])
-                        ]),
-
-        # dbc.Row(
-        #     [   
+            
+        ])
+        
                 
-        #         dbc.Col(md=3, children=[
-        #            # html.Div(id="cluster-panel")
-        #     ]),
+    ]),
 
-        #         dbc.Col(md=9, children=[
-        #         #html.Div(id="cluster-title"),
-        #         dbc.Tabs(className="nav nav-pills", children=[
-        #         dbc.Tab(dcc.Graph(id="buttom-plot-kgs"), label="Wassla l3dm / Total kgs"),
-        #         dbc.Tab(dcc.Graph(id="buttom-plot"), label="Wassla l3dm / Total shipment"),
-        #         dbc.Tab(dcc.Graph(id="buttom-plot-price"), label="Wassla l3dm / Total price"),
-        #         dbc.Tab(dcc.Graph(id="buttom-plot-volume"), label="Wassla l3dm / Total volume"),
-        #         dbc.Tab(dcc.Graph(id=".."), label="....")
-                
-        #     ])
-        #                 ])
-        #     ]
-        # ),
-        dbc.Row([
+    dbc.Row([
         ### input + panel
         dbc.Col(md=3, children=[
-        #    html.Div(id="customer-dropdown")
+            
         ]),
         ### plots
-        ### plots
         dbc.Col(md=9, children=[
-            dbc.Col(html.H4("ML Analysis"), width={"size":6,"offset":3})
-            # dbc.Tabs(className="nav nav-pills", children=[
-            #     dbc.Tab(dcc.Graph(id="k-means"), label="K-means Clustering"),
-            #     dbc.Tab(dcc.Graph(id="plot-active"), label="Hierarchical Clustering")
+            
                 
-            # ])
         ])
         
                 
     ])
 
 ])
+
+# Select the city or type of clients 
+@app.callback(output=Output("name_group","children"), inputs=[Input("dataframe","value")])
+def render_output_column(dd):
+
+    data = Data()
+    bool_val = True
+    if dd == 'big_df' :
+        bool_val = False
+
+    panel = html.Div([
+    dbc.FormGroup([
+    dcc.Dropdown(id="name_group_id", options=[{"label":x,"value":x} for x in data.get_names_groupe()], value = "City", disabled = bool_val)
+    ])
+    ])
+  
+    return panel
+
+# Select the city or type of clients 
+@app.callback(output=Output("city_type","children"), inputs=[Input("name_group_id","value"),Input("dataframe","value")])
+def render_output_city(name,dd):
+
+    bool_val = True
+    if dd == 'big_df' :
+        bool_val = False
+    data = Data()
+    var = "Casablanca"
+    if name == "Type Of Customer" : 
+        li = data.get_types()
+        var = 'A'
+    else : 
+        li = data.get_cities()
+    panel = html.Div([
+    dbc.FormGroup([
+    dcc.Dropdown(id="drop_city_type", options=[{"label":x,"value":x} for x in li], value = var, disabled= bool_val )
+    ])
+    ])
+  
+    return panel
+
+
+
+# Time Series/ Products plot
+@app.callback(output=Output("time_products","figure"), inputs=[Input("product_name","value"),Input("analyze_by","value")])
+def render_cluster_plots_products(name,filtre):
+    data = Data()
+    df = data.get_product_data(name)
+    chart = Chart()
+    return chart.plot_time_series(df,filtre)
+
 
 
 #Python function to plot pie chart
@@ -250,11 +303,21 @@ def plot_pie(customer):
 
 
 #Python function to plot cluster panel 
-@app.callback(output=Output("cluster-insight","children"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
-def render_cluster_title(cluster_panel,dataframe):
-
-    d= data.get_shp_cluster_name(cluster_panel,dataframe)
+@app.callback(output=Output("cluster-insight","children"), inputs=[Input("cluster-panel","value"),Input("dataframe","value"),Input("customers","value"),Input("name_group_id","value"),Input("drop_city_type","value")])
+def render_cluster_title(cluster_panel,dataframe,customer,in1,in2):
+    if dataframe == "shipments" : 
+        d= data.get_shp_cluster_name(cluster_panel,dataframe)
+    else : 
+        kmeans = Process()
+        all_df = kmeans.K_means(in1,in2)
+        x_df = all_df[1]
+        kk = x_df.groupby('cluster')
+        d = kk.get_group(int(cluster_panel))
+        
     info = data.get_info(d)
+    info_customer = data.get_info_cust(dataframe,customer)
+    print('####################')
+    print(info)
     panel = html.Div([
         html.H4('Cluster {}'.format(cluster_panel)),
         dbc.Card(body=True, className="text-white bg-primary", children=[
@@ -264,27 +327,38 @@ def render_cluster_title(cluster_panel,dataframe):
             
             html.H6("mean || Total Shipments:", className="text-danger"),
             html.H3("{:,.0f}".format(info[0]), className="text-danger"),
+        ]),
+        html.Br(),html.Br(),
+
+        html.H4('{}'.format(customer)),
+        dbc.Card(body=True, className="text-white bg-primary", children=[
+            
+            html.H6("Total Price:", style={"color":"white"}),
+            html.H3("{:,.0f}".format(info_customer[0]), style={"color":"white"}),
+            
+            html.H6("Total Shipments:",  style={"color":"white"}),
+            html.H3("{:,.0f}".format(info_customer[1]), style={"color":"white"}),
         ])
     ])
     return panel
 
 #Python function to plot customer panel 
-@app.callback(output=Output("customers-insight","children"), inputs=[Input("customers","value"),Input("dataframe","value")])
-def render_customers_panel(customer,dataframe):
-    info = data.get_shp_customer_info(customer,dataframe)
-    print(info[0])
-    panel = html.Div([
-        html.H4('{}'.format(customer)),
-        dbc.Card(body=True, className="text-white bg-primary", children=[
+# @app.callback(output=Output("customers-insight","children"), inputs=[Input("customers","value"),Input("dataframe","value")])
+# def render_customers_panel(customer,dataframe):
+#     info = data.get_shp_customer_info(customer,dataframe)
+#     print(info[0])
+#     panel = html.Div([
+#         html.H4('{}'.format(customer)),
+#         dbc.Card(body=True, className="text-white bg-primary", children=[
             
-            html.H6("Total Price:", style={"color":"white"}),
-            html.H3("{:,.0f}".format(info[1]), style={"color":"white"}),
+#             html.H6("Total Price:", style={"color":"white"}),
+#             html.H3("{:,.0f}".format(info[1]), style={"color":"white"}),
             
-            html.H6("Total Shipments:", className="text-danger"),
-            html.H3("{:,.0f}".format(info[0]), className="text-danger"),
-        ])
-    ])
-    return panel
+#             html.H6("Total Shipments:", className="text-danger"),
+#             html.H3("{:,.0f}".format(info[0]), className="text-danger"),
+#         ])
+#     ])
+#     return panel
 
 # map plot 
 @app.callback(output=Output("map-plot","figure"), inputs=[Input("map_feature","value")]) 
@@ -300,51 +374,19 @@ def plot_map(map_feature):
     return chart.plot_map(df,map_feature)
 
 
-#Top plot 
-'''
-@app.callback(output=Output("top-plot","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
-def render_cluster_plot_bsh(cluster_panel,dataframe):
-    #print(dataframe)    
-    # print(cluster_panel," ",type(cluster_panel))
-    d= data.get_shp_cluster_name(cluster_panel,dataframe)
-    details = data.get_top_shps(d)  
-    # clu_int = int(cluster_panel)
-    chart = Chart()
-    return chart.plot_h_top(details,True)
-
-@app.callback(output=Output("top-plot-kgs","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
-def render_cluster_plot_tkg(cluster_panel,dataframe):
-    # print(cluster_panel," ",type(cluster_panel))
-    d= data.get_shp_cluster_name(cluster_panel,dataframe)
-    details = data.get_top_kgs(d)
-    # clu_int = int(cluster_panel)
-    chart = Chart()
-    return chart.plot_h_top(details,True)
-
-@app.callback(output=Output("top-plot-volume","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
-def render_cluster_plot_tvolume(cluster_panel,dataframe):
-    #print(dataframe)    
-    # print(cluster_panel," ",type(cluster_panel))
-    d= data.get_shp_cluster_name(cluster_panel,dataframe)
-    details = data.get_top_volume(d)  
-    # clu_int = int(cluster_panel)
-    chart = Chart()
-    return chart.plot_h_top(details,True)
-
-@app.callback(output=Output("top-plot-price","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
-def render_cluster_plot_tprice(cluster_panel,dataframe):
-    # print(cluster_panel," ",type(cluster_panel))
-    d= data.get_shp_cluster_name(cluster_panel,dataframe)
-    details = data.get_top_price(d)
-    # clu_int = int(cluster_panel)
-    chart = Chart()
-    return chart.plot_h_top(details,True)
-'''
 
 # Top plots 
-@app.callback(output=Output("top-plots","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value"),Input("top_top","value")])
-def render_cluster_plots(cluster_panel,dataframe,top_top):
-    d= data.get_shp_cluster_name(cluster_panel,dataframe)
+@app.callback(output=Output("top-plots","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value"),Input("top_top","value"),Input("name_group_id","value"),Input("drop_city_type","value")])
+def render_cluster_plots(cluster_panel,dataframe,top_top,in1,in2):
+    if dataframe == "shipments" : 
+       d = data.get_shp_cluster_name(cluster_panel,dataframe)
+    else : 
+        kmeans = Process()
+        all_df = kmeans.K_means(in1,in2)
+        df = all_df[1]
+        kk = df.groupby('cluster')
+        d = kk.get_group(int(cluster_panel))
+    
     if top_top == "TOTAL KG": 
         details = data.get_top_kgs(d)
         chart = Chart()
@@ -364,9 +406,16 @@ def render_cluster_plots(cluster_panel,dataframe,top_top):
 
 
 ## Worst plots 
-@app.callback(output=Output("worst-plots","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value"),Input("worst_worst","value")])
-def render_cluster_plots_worst(cluster_panel,dataframe,worst_worst):
-    d= data.get_shp_cluster_name(cluster_panel,dataframe)
+@app.callback(output=Output("worst-plots","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value"),Input("worst_worst","value"),Input("name_group_id","value"),Input("drop_city_type","value")])
+def render_cluster_plots_worst(cluster_panel,dataframe,worst_worst,in1,in2):
+    if dataframe == "shipments" : 
+       d = data.get_shp_cluster_name(cluster_panel,dataframe)
+    else : 
+        kmeans = Process()
+        all_df = kmeans.K_means(in1,in2)
+        df = all_df[1]
+        kk = df.groupby('cluster')
+        d = kk.get_group(int(cluster_panel))
     if worst_worst == "TOTAL KG": 
         details = data.get_buttom_kgs(d)
         chart = Chart()
@@ -384,79 +433,44 @@ def render_cluster_plots_worst(cluster_panel,dataframe,worst_worst):
         chart = Chart()
         return chart.plot_h_top(details,False)
 
-    
-
-# @app.callback(output=Output("top-plots","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
-# def render_cluster_plot_tprice(cluster_panel,dataframe,n):
-#     if(n=="kgs_button")
-#     # print(cluster_panel," ",type(cluster_panel))
-#     d= data.get_shp_cluster_name(cluster_panel,dataframe)
-#     details = data.get_top_price(d)
-#     # clu_int = int(cluster_panel)
-#     chart = Chart()
-#     return chart.plot_h_top(details,True)
-
-#bottom plot 
-'''
-@app.callback(output=Output("buttom-plot","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
-def render_cluster_plot_bsh(cluster_panel,dataframe):
-    # print(cluster_panel," ",type(cluster_panel))
-    d= data.get_shp_cluster_name(cluster_panel,dataframe)
-    details = data.get_buttom_shps(d)
-    # clu_int = int(cluster_panel)
-    chart = Chart()
-    return chart.plot_h_top(details,False)
-
-@app.callback(output=Output("buttom-plot-kgs","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
-def render_cluster_plot_bkg(cluster_panel,dataframe):
-    # print(cluster_panel," ",type(cluster_panel))
-    d= data.get_shp_cluster_name(cluster_panel,dataframe)
-    details = data.get_buttom_kgs(d)
-    # clu_int = int(cluster_panel)
-    chart = Chart()
-    return chart.plot_h_top(details,False)
-
-@app.callback(output=Output("buttom-plot-volume","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
-def render_cluster_plot_tvolume(cluster_panel,dataframe):
-    #print(dataframe)    
-    # print(cluster_panel," ",type(cluster_panel))
-    d= data.get_shp_cluster_name(cluster_panel,dataframe)
-    details = data.get_buttom_volume(d)  
-    # clu_int = int(cluster_panel)
-    chart = Chart()
-    return chart.plot_h_top(details,False)
-
-@app.callback(output=Output("buttom-plot-price","figure"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
-def render_cluster_plot_tprice(cluster_panel,dataframe):
-    # print(cluster_panel," ",type(cluster_panel))
-    d= data.get_shp_cluster_name(cluster_panel,dataframe)
-    details = data.get_buttom_price(d)
-    # clu_int = int(cluster_panel)
-    chart = Chart()
-    return chart.plot_h_top(details,False)
-'''
 # Plot scatter
-@app.callback(output=Output("k-means","figure"), inputs=[Input("dataframe","value")]) 
-def plot_k_means(dataframe):
-    #print(type(dataframe))
-    pca_df = data.get_pca(dataframe)   
+@app.callback(output=Output("k-means","figure"), inputs=[Input("dataframe","value"),Input("name_group_id","value"),Input("drop_city_type","value")]) 
+def plot_k_means(dataframe,in1,in2):
+    if dataframe == "shipments" : 
+        pca_df = data.get_pca(dataframe)
+    else : 
+        kmeans = Process()
+        all_df = kmeans.K_means(in1,in2)
+        pca_df = all_df[0]
+
     chart = Chart()
     return chart.plot_scatter(pca_df)
 
 
 # Plot cluster's general insights 
-@app.callback(output=Output("horizontal-bar","figure"), inputs=[Input("dataframe","value")]) 
-def plot_h_cluster(dataframe):
-    #print(type(dataframe))
-    pca_df = data.get_pca(dataframe)
+@app.callback(output=Output("horizontal-bar","figure"), inputs=[Input("dataframe","value"),Input("name_group_id","value"),Input("drop_city_type","value")]) 
+def plot_h_cluster(dataframe,in1,in2):
+    if dataframe == "shipments" : 
+        pca_df = data.get_pca(dataframe)
+    else : 
+        kmeans = Process()
+        all_df = kmeans.K_means(in1,in2)
+        pca_df = all_df[0]
     chart = Chart()
     return chart.plot_h_bar(pca_df)
 
 #dropdown cluster 
-@app.callback(output=Output("cluster-panel","children"), inputs=[Input("dataframe","value")])
-def render_output_panel(dataframe):
-    x_df = data.get_pca(dataframe)
+@app.callback(output=Output("cluster-panel-output","children"), inputs=[Input("dataframe","value"),Input("name_group_id","value"),Input("drop_city_type","value")])
+def render_output_panel(dataframe,in1,in2):
+    if dataframe == "shipments" : 
+        x_df = data.get_pca(dataframe)
+    else : 
+        kmeans = Process()
+        all_df = kmeans.K_means(in1,in2)
+        x_df = all_df[0]
+    
     clusters = x_df.cluster.unique().tolist()
+    
     panel = html.Div([
     dbc.FormGroup([
     html.H4("Select Cluster"),
@@ -466,13 +480,20 @@ def render_output_panel(dataframe):
     return panel
 
 #customers clustering 
-@app.callback(output=Output("customer-dropdown","children"), inputs=[Input("cluster-panel","value"),Input("dataframe","value")])
-def render_output_customer(panel,dataframe):
-    x_df = data.get_shp_cluster_name(panel,dataframe)
+@app.callback(output=Output("customer-dropdown","children"), inputs=[Input("cluster-panel","value"),Input("dataframe","value"),Input("name_group_id","value"),Input("drop_city_type","value")])
+def render_output_customer(panel,dataframe,in1,in2):
+    if dataframe == "shipments" : 
+        x_df= data.get_shp_cluster_name(panel,dataframe)
+    else : 
+        kmeans = Process()
+        all_df = kmeans.K_means(in1,in2)
+        df = all_df[1]
+        kk = df.groupby('cluster')
+        x_df = kk.get_group(int(panel))
     names = x_df.CUST_NAME.tolist()
     panel = html.Div([
     dbc.FormGroup([
-    dcc.Dropdown(id="customers", options=[{"label":x,"value":x} for x in names],placeholder= "Select Customer")
+    dcc.Dropdown(id="customers", options=[{"label":x,"value":x} for x in names],value= "MTCM")
     ])
     ])
     return panel

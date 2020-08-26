@@ -43,10 +43,10 @@ class Chart():
         
         count_cluster = df['cluster'].value_counts()
         y_clusters = [x for x in count_cluster.index ]
-        #print(x_clusters)
+        
         x_clusters = [x for x in count_cluster ]
-        #print(y_clusters)
-
+        print(y_clusters)
+        print(x_clusters)
         fig = go.Figure(go.Bar(
          x=x_clusters,
          y=y_clusters,
@@ -74,40 +74,6 @@ class Chart():
 
         return fig
 
-    # @staticmethod
-    # def plot_2h_bar(df) :
-        
-    #     fig2 = make_subplots(rows=1, cols=2, specs=[[{}, {}]], shared_xaxes=True,
-    #                 shared_yaxes=False, vertical_spacing=0.001)
-
-    #     fig2.append_trace(go.Bar(
-    #         x=top_cust_shp,
-    #         y=top_cust_name,
-    #         marker=dict(
-    #             color='rgba(50, 171, 96, 0.6)',
-    #             line=dict(
-    #                 color='rgba(50, 171, 96, 1.0)',
-    #                 width=1),
-    #         ),
-    #         orientation='h',
-    #     ), 1, 1)
-
-    #     fig2.append_trace(go.Bar(
-    #         x=top_cust_kg,
-    #         y=top_cust_kg_name,
-    #         marker=dict(
-    #             color='rgba(50, 171, 96, 0.6)',
-    #             line=dict(
-    #                 color='rgba(50, 171, 96, 1.0)',
-    #                 width=1),
-    #         ),
-    #         orientation='h',
-    #     ), 1, 2)
-
-    #     #fig.update_traces(marker=dict(colors=colors))
-    #     fig2.update_layout(plot_bgcolor='white', autosize=False, width=1000, height=400) 
-    #     return fig2
-    
     @staticmethod
     def plot_h_top(details,info) : 
 
@@ -128,5 +94,24 @@ class Chart():
         ))
 
         #fig.update_traces(marker=dict(colors=colors))
+        fig.update_layout(plot_bgcolor='white', autosize=False, width=1000, height=400) 
+        return fig
+
+
+    @staticmethod
+    def plot_time_series(df,filtre) : 
+        fig = px.line(df, x='DATE', y=filtre)
+        fig.update_xaxes(
+            rangeslider_visible=True,
+            rangeselector=dict(
+                buttons=list([
+                    dict(count=1, label="1m", step="month", stepmode="backward"),
+                    dict(count=6, label="6m", step="month", stepmode="backward"),
+                    dict(count=1, label="YTD", step="year", stepmode="todate"),
+                    dict(count=1, label="1y", step="year", stepmode="backward"),
+                    dict(step="all")
+                ])
+            )
+        )
         fig.update_layout(plot_bgcolor='white', autosize=False, width=1000, height=400) 
         return fig

@@ -169,6 +169,17 @@ class Data():
     @staticmethod
     def get_info(df): 
         return df['NUM_OF_SHP'].mean(),df['CUST_TOTAL_PRICE'].mean()
+
+    @staticmethod
+    def get_info_cust(name_file,cust) :
+
+        path = "python/data/"+name_file+".csv"
+        test = pd.read_csv(path)
+        x = test[test['CUST_NAME']== cust]['CUST_TOTAL_PRICE'].tolist()
+        y = test[test['CUST_NAME']== cust]['NUM_OF_SHP'].tolist()
+     
+        return x[0],y[0]
+
     
     @staticmethod
     def get_columns_map() :
@@ -184,7 +195,34 @@ class Data():
 
     @staticmethod
     def get_product_customer() : 
-        return pd.read_csv("python/data/prod_cust.csv")
+        return pd.read_csv("python/prod_cust.csv")
 
+    @staticmethod
+    def get_product_data(name_product) : 
+        prod_ship = pd.read_csv("python/products_time_series.csv")
+        grouped_by_prod = prod_ship.groupby('PROD_NAME')
+        grouped_prod_date = grouped_by_prod.get_group(name_product).groupby('DATE')
+        sl = grouped_prod_date.DATE.unique().astype(str).str[2:12].tolist()
+        datatata = {'DATE' :[x for x in sl] , \
+                'TOTAL KG':[grouped_prod_date.get_group(str(x)).TOTAL_DESI_KG.sum() for x in sl], \
+                'TOTAL VOLUME':[grouped_prod_date.get_group(str(x)).TOTAL_VOLUME.sum() for x in sl], \
+                'TOTAL PRICE':[grouped_prod_date.get_group(str(x)).TOTAL_PRICE_LOCAL.sum() for x in sl], \
+                'TOTAL SHIPMENTS':[grouped_prod_date.get_group(str(x)).CUST_ID.count() for x in sl] }
+        shipments_products_ = pd.DataFrame(datatata)
+        return shipments_products_
+
+    @staticmethod
+    def get_cities() : 
+        return pd.read_csv("python/data/big_df.csv").City.unique()
+
+    @staticmethod
+    def get_types() : 
+        return ['A','B','C']
+
+    @staticmethod
+    def get_names_groupe() : 
+        return ['City','Type Of Customer']
+
+    
     
     
